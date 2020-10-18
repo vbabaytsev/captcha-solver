@@ -24,6 +24,9 @@ class CaptchaSolver {
 
         try {
             const result = await got.post(this.sendUrl, {
+                    if (result.status !== 1) {
+                        throw new Error(result.request);
+                    }
                     responseType: 'json',
                     resolveBodyOnly: true,
                     searchParams: {
