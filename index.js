@@ -23,10 +23,8 @@ class CaptchaSolver {
         }
 
         try {
-            const {
-                taskId: request
-            } = await got.post(this.sendUrl, {
-                    responseType:   'json',
+            const result = await got.post(this.sendUrl, {
+                    responseType: 'json',
                     resolveBodyOnly: true,
                     searchParams: {
                         key: this.key,
@@ -34,7 +32,9 @@ class CaptchaSolver {
                         ...params
                     }
                 });
-            this.taskId = taskId;
+            const {
+                request: taskId
+            } = result;
             return taskId;
         } catch (e) {
             throw new Error('Task creation failed: ' + e.message);
@@ -60,7 +60,7 @@ class CaptchaSolver {
                 if (result.status === 1) {
                     return {
                         taskId,
-                        token: result.request
+                        solution: result.request
                     };
                 } else {
                     if (result.request === 'ERROR_CAPTCHA_UNSOLVABLE') {
@@ -107,9 +107,9 @@ class CaptchaSolver {
     async solve(params) {
         try {
             const taskId = await this.createTask(params);
-            const result = await getSolution(taskId);
+            const result = await this.getSolution(taskId);
             return {
-                token: result.request,
+                solution: result.solution,
                 isGood: this.report.bind(null, taskId, true),
                 isBad: this.report.bind(null, taskId, false)
             };
