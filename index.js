@@ -8,8 +8,8 @@ class CaptchaSolver {
         this.key = key;
         options = options || {};
         const provider = options.provider || 'rucaptcha';
-        this.sendUrl = `https://${provider}/in.php`;
-        this.resultUrl = `https://${provider}/res.php`;
+        this.sendUrl = `https://${provider}.com/in.php`;
+        this.resultUrl = `https://${provider}.com/res.php`;
         this.delay = parseInt(options.delay) || 1000;
     }
 
