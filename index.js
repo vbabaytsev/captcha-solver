@@ -13,7 +13,7 @@ class CaptchaSolver {
         this.delay = parseInt(options.delay) || 1000;
     }
 
-    _wait(ms) {
+    async _wait(ms) {
         return new Promise((resolve) => setTimeout(() => resolve(), ms));
     }
 
@@ -113,8 +113,8 @@ class CaptchaSolver {
             const result = await this.getSolution(taskId);
             return {
                 solution: result.solution,
-                isGood: this.report.bind(null, taskId, true),
-                isBad: this.report.bind(null, taskId, false)
+                isGood: this.report.bind(this, taskId, true),
+                isBad: this.report.bind(this, taskId, false)
             };
         } catch (e) {
             throw new Error('Solver failed: ' + e.message);
