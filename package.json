@@ -1,0 +1,23 @@
+{
+  "name": "captcha-solver",
+  "version": "1.0.0",
+  "description": "Модуль для решения различных капч для node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vbabaytsev/captcha-solver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vbabaytsev/captcha-solver/issues"
+  },
+  "homepage": "https://github.com/vbabaytsev/captcha-solver#readme",
+  "dependencies": {
+    "got": "^11.7.0"
+  }
+}
