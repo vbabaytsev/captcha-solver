@@ -40,6 +40,7 @@ class CaptchaSolver {
             } = result;
             return taskId;
         } catch (e) {
+          console.log(e);
             throw new Error('Task creation failed: ' + e.message);
         }
     }
