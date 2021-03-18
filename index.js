@@ -35,12 +35,9 @@ class CaptchaSolver {
             if (result.status !== 1) {
                 throw new Error(result.request);
             }
-            const {
-                request: taskId
-            } = result;
+            const { request: taskId } = result;
             return taskId;
         } catch (e) {
-          console.log(e);
             throw new Error('Task creation failed: ' + e.message);
         }
     }
