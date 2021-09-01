@@ -20,7 +20,7 @@ class CaptchaSolver {
             const result = await got_1.default.post(this.sendUrl, {
                 responseType: 'json',
                 resolveBodyOnly: true,
-                searchParams: { key: this.key, ...params },
+                [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
             });
             if (result.status !== 1) {
                 throw new Error(result.request);

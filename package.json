@@ -1,6 +1,6 @@
 {
   "name": "captcha-solver",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Модуль для решения различных капч для node.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
