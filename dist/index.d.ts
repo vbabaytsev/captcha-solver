@@ -1,9 +1,8 @@
 declare type Options = {
     provider: string;
-    delay: number;
+    delay?: number;
 };
 declare type Params = {
-    key: string;
     method: 'base64';
     body: string;
     phrase?: 0 | 1;
@@ -14,13 +13,11 @@ declare type Params = {
     maxlength?: number;
     json?: 0 | 1;
 } | {
-    key: string;
     method: 'userrecaptcha';
     googlekey: string;
     pageurl: string;
     json: 0 | 1;
 } | {
-    key: string;
     method: 'userrecaptcha';
     version: 'v3';
     googlekey: string;

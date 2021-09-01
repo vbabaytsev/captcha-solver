@@ -2,11 +2,10 @@ import got from 'got';
 
 type Options = {
   provider: string;
-  delay: number;
+  delay?: number;
 };
 
 type Params = {
-  key: string;
   method: 'base64';
   body: string;
   phrase?: 0 | 1;
@@ -17,13 +16,11 @@ type Params = {
   maxlength?: number;
   json?: 0 | 1;
 } | {
-  key: string;
   method: 'userrecaptcha',
   googlekey: string;
   pageurl: string;
   json: 0 | 1;
 } | {
-  key: string;
   method: 'userrecaptcha';
   version: 'v3';
   googlekey: string;
@@ -70,7 +67,7 @@ class CaptchaSolver {
       const result: Response = await got.post(this.sendUrl, {
         responseType: 'json',
         resolveBodyOnly: true,
-        searchParams: params,
+        searchParams: { key: this.key, ...params },
       });
       if (result.status !== 1) {
         throw new Error(result.request);
