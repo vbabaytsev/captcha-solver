@@ -88,7 +88,7 @@ class CaptchaSolver {
           },
         });
 
-        if (result === 'CAPTCHA_NOT_READY') {
+        if (result === 'CAPCHA_NOT_READY') {
           return;
         }
 

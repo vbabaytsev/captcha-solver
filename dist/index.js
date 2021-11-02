@@ -42,7 +42,7 @@ class CaptchaSolver {
                         id: taskId,
                     },
                 });
-                if (result === 'CAPTCHA_NOT_READY') {
+                if (result === 'CAPCHA_NOT_READY') {
                     return;
                 }
                 const [, solution] = result.split('|');
