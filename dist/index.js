@@ -18,15 +18,10 @@ class CaptchaSolver {
     async createTask(params) {
         try {
             const result = await got_1.default.post(this.sendUrl, {
-                responseType: 'json',
                 resolveBodyOnly: true,
                 [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
             });
-            if (result.status !== 1) {
-                throw new Error(result.request);
-            }
-            const { request: taskId } = result;
-            return taskId;
+            return result;
         }
         catch (e) {
             throw new Error(`Task creation failed: ${e.message}`);
@@ -36,30 +31,28 @@ class CaptchaSolver {
         return new Promise((resolve, reject) => {
             const timer = setInterval(async () => {
                 const result = await (0, got_1.default)(this.resultUrl, {
-                    responseType: 'json',
                     resolveBodyOnly: true,
                     searchParams: {
                         key: this.key,
                         action: 'get',
                         id: taskId,
-                        json: 1,
                     },
                 });
-                if (result.status === 1) {
+                const [, solution] = result.split('|');
+                if (solution) {
                     clearInterval(timer);
                     resolve({
                         taskId,
-                        solution: result.request,
+                        solution,
                     });
-                    return;
                 }
-                if (result.request === 'ERROR_CAPTCHA_UNSOLVABLE') {
+                else if (result === 'ERROR_CAPTCHA_UNSOLVABLE') {
                     clearInterval(timer);
-                    reject(new Error('Unable to solve recaptcha'));
+                    reject(new Error('Unable to solve captcha'));
                 }
                 else {
                     clearInterval(timer);
-                    reject(new Error(result.request));
+                    reject(new Error(result));
                 }
             }, this.delay);
         });
@@ -71,11 +64,9 @@ class CaptchaSolver {
         const reportType = isGood ? 'reportgood' : 'reportbad';
         try {
             await got_1.default.post(this.resultUrl, {
-                responseType: 'json',
                 resolveBodyOnly: true,
                 searchParams: {
                     key: this.key,
-                    json: 1,
                     action: reportType,
                     id: taskId,
                 },
