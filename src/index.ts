@@ -61,6 +61,9 @@ class CaptchaSolver {
     try {
       const result: string = await got.post(this.sendUrl, {
         resolveBodyOnly: true,
+        https: {
+          rejectUnauthorized: false,
+        },
         [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
       });
 
@@ -81,6 +84,9 @@ class CaptchaSolver {
       const timer = setInterval(async () => {
         const result: string = await got(this.resultUrl, {
           resolveBodyOnly: true,
+          https: {
+            rejectUnauthorized: false,
+          },
           searchParams: {
             key: this.key,
             action: 'get',
@@ -120,6 +126,9 @@ class CaptchaSolver {
     try {
       await got.post(this.resultUrl, {
         resolveBodyOnly: true,
+        https: {
+          rejectUnauthorized: false,
+        },
         searchParams: {
           key: this.key,
           action: reportType,
