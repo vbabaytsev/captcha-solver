@@ -21,7 +21,11 @@ class CaptchaSolver {
                 resolveBodyOnly: true,
                 [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
             });
-            return result;
+            const [, taskId] = result.split('|');
+            if (!taskId) {
+                throw new Error(result);
+            }
+            return taskId;
         }
         catch (e) {
             throw new Error(`Task creation failed: ${e.message}`);
