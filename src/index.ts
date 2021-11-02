@@ -64,7 +64,13 @@ class CaptchaSolver {
         [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
       });
 
-      return result;
+      const [, taskId] = result.split('|');
+
+      if (!taskId) {
+        throw new Error(result);
+      }
+
+      return taskId;
     } catch (e: any) {
       throw new Error(`Task creation failed: ${e.message}`);
     }
