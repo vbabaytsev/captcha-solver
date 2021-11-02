@@ -42,6 +42,9 @@ class CaptchaSolver {
                         id: taskId,
                     },
                 });
+                if (result === 'CAPTCHA_NOT_READY') {
+                    return;
+                }
                 const [, solution] = result.split('|');
                 if (solution) {
                     clearInterval(timer);
