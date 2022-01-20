@@ -1,6 +1,7 @@
 declare type Options = {
     provider: string;
     delay?: number;
+    debug?: boolean;
 };
 declare type Params = {
     method: 'base64';
@@ -35,6 +36,7 @@ declare class CaptchaSolver {
     private resultUrl;
     private delay;
     private provider;
+    private debug?;
     constructor(key: string, options: Options);
     createTask(params: Params): Promise<string>;
     getSolution(taskId: string): Promise<SolveResult>;

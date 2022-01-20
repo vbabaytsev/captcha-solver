@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable no-console */
 const got_1 = __importDefault(require("got"));
 class CaptchaSolver {
     constructor(key, options) {
@@ -14,6 +15,7 @@ class CaptchaSolver {
         this.resultUrl = `https://${options.provider}/res.php`;
         this.delay = options.delay || 1000;
         this.provider = options.provider;
+        this.debug = options.debug;
     }
     async createTask(params) {
         try {
@@ -22,8 +24,16 @@ class CaptchaSolver {
                 https: {
                     rejectUnauthorized: false,
                 },
+                retry: {
+                    methods: ['POST'],
+                    limit: 3,
+                },
+                timeout: 30000,
                 [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
             });
+            if (this.debug) {
+                console.log('[debug] createTask result:', result);
+            }
             const [, taskId] = result.split('|');
             if (!taskId) {
                 throw new Error(result);
@@ -42,12 +52,17 @@ class CaptchaSolver {
                     https: {
                         rejectUnauthorized: false,
                     },
+                    retry: 2,
+                    timeout: 30000,
                     searchParams: {
                         key: this.key,
                         action: 'get',
                         id: taskId,
                     },
                 });
+                if (this.debug) {
+                    console.log('[debug] getSolution result:', result);
+                }
                 if (result === 'CAPCHA_NOT_READY') {
                     return;
                 }
