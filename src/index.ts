@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 import got from 'got';
 
 type Options = {
   provider: string;
   delay?: number;
+  debug?: boolean;
 };
 
 type Params = {
@@ -45,6 +47,8 @@ class CaptchaSolver {
 
   private provider: string;
 
+  private debug?: boolean;
+
   constructor(key: string, options: Options) {
     if (!key) {
       throw new Error('Param key is missing');
@@ -55,6 +59,7 @@ class CaptchaSolver {
     this.resultUrl = `https://${options.provider}/res.php`;
     this.delay = options.delay || 1000;
     this.provider = options.provider;
+    this.debug = options.debug;
   }
 
   async createTask(params: Params): Promise<string> {
@@ -71,6 +76,10 @@ class CaptchaSolver {
         timeout: 30000,
         [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
       });
+
+      if (this.debug) {
+        console.log('[debug] createTask result:', result);
+      }
 
       const [, taskId] = result.split('|');
 
@@ -100,6 +109,10 @@ class CaptchaSolver {
             id: taskId,
           },
         });
+
+        if (this.debug) {
+          console.log('[debug] getSolution result:', result);
+        }
 
         if (result === 'CAPCHA_NOT_READY') {
           return;
