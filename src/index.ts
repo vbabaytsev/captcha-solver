@@ -22,6 +22,7 @@ type Params = {
   googlekey: string;
   pageurl: string;
   json: 0 | 1;
+  cmbrowsertype?: string;
 } | {
   method: 'userrecaptcha';
   version: 'v3';
@@ -29,6 +30,7 @@ type Params = {
   pageurl: string;
   action: string;
   min_score: number;
+  cmbrowsertype?: string;
 };
 
 type SolveResult = {
