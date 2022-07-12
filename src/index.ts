@@ -31,6 +31,14 @@ type Params = {
   action: string;
   min_score: number;
   cmbrowsertype?: string;
+} | {
+  method: 'userrecaptcha';
+  enterprise: number;
+  googlekey: string;
+  pageurl: string;
+  action: string;
+  min_score: number;
+  cmbrowsertype?: string;
 };
 
 type SolveResult = {
