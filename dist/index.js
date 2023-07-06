@@ -47,40 +47,45 @@ class CaptchaSolver {
     async getSolution(taskId) {
         return new Promise((resolve, reject) => {
             const timer = setInterval(async () => {
-                const result = await (0, got_1.default)(this.resultUrl, {
-                    resolveBodyOnly: true,
-                    https: {
-                        rejectUnauthorized: false,
-                    },
-                    retry: 2,
-                    timeout: 30000,
-                    searchParams: {
-                        key: this.key,
-                        action: 'get',
-                        id: taskId,
-                    },
-                });
-                if (this.debug) {
-                    console.log('[debug] getSolution result:', result);
-                }
-                if (result === 'CAPCHA_NOT_READY') {
-                    return;
-                }
-                const [, solution] = result.split('|');
-                if (solution) {
-                    clearInterval(timer);
-                    resolve({
-                        taskId,
-                        solution,
+                try {
+                    const result = await (0, got_1.default)(this.resultUrl, {
+                        resolveBodyOnly: true,
+                        https: {
+                            rejectUnauthorized: false,
+                        },
+                        retry: 2,
+                        timeout: 30000,
+                        searchParams: {
+                            key: this.key,
+                            action: 'get',
+                            id: taskId,
+                        },
                     });
+                    if (this.debug) {
+                        console.log('[debug] getSolution result:', result);
+                    }
+                    if (result === 'CAPCHA_NOT_READY') {
+                        return;
+                    }
+                    const [, solution] = result.split('|');
+                    if (solution) {
+                        clearInterval(timer);
+                        resolve({
+                            taskId,
+                            solution,
+                        });
+                    }
+                    else if (result === 'ERROR_CAPTCHA_UNSOLVABLE') {
+                        clearInterval(timer);
+                        reject(new Error('Unable to solve captcha'));
+                    }
+                    else {
+                        clearInterval(timer);
+                        reject(new Error(result));
+                    }
                 }
-                else if (result === 'ERROR_CAPTCHA_UNSOLVABLE') {
-                    clearInterval(timer);
-                    reject(new Error('Unable to solve captcha'));
-                }
-                else {
-                    clearInterval(timer);
-                    reject(new Error(result));
+                catch (e) {
+                    reject(e);
                 }
             }, this.delay);
         });
