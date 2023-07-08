@@ -145,6 +145,7 @@ class CaptchaSolver {
             reject(new Error(result));
           }
         } catch (e: any) {
+          clearInterval(timer);
           reject(e);
         }
       }, this.delay);

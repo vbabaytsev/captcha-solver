@@ -85,6 +85,7 @@ class CaptchaSolver {
                     }
                 }
                 catch (e) {
+                    clearInterval(timer);
                     reject(e);
                 }
             }, this.delay);
