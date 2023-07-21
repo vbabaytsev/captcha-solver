@@ -1,6 +1,6 @@
 {
   "name": "captcha-solver",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "Модуль для решения различных капч для node.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/vbabaytsev/captcha-solver#readme",
   "dependencies": {
-    "got": "^11.8.5"
+    "got": "^11.8.6"
   },
   "devDependencies": {
     "@types/node": "^14.17.13",
