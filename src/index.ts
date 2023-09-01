@@ -103,57 +103,53 @@ class CaptchaSolver {
     }
   }
 
-  async getSolution(taskId: string): Promise<SolveResult> {
-    try {
-      return await new Promise<SolveResult>((resolve, reject) => {
-        const timer = setInterval(async () => {
-          try {
-            const result: string = await got(this.resultUrl, {
-              resolveBodyOnly: true,
-              https: {
-                rejectUnauthorized: false,
-              },
-              retry: 2,
-              timeout: 30000,
-              searchParams: {
-                key: this.key,
-                action: 'get',
-                id: taskId,
-              },
-            });
+  getSolution(taskId: string): Promise<SolveResult> {
+    return new Promise<SolveResult>((resolve, reject) => {
+      const timer = setInterval(async () => {
+        try {
+          const result: string = await got(this.resultUrl, {
+            resolveBodyOnly: true,
+            https: {
+              rejectUnauthorized: false,
+            },
+            retry: 2,
+            timeout: 30000,
+            searchParams: {
+              key: this.key,
+              action: 'get',
+              id: taskId,
+            },
+          });
 
-            if (this.debug) {
-              console.log('[debug] getSolution result:', result);
-            }
-
-            if (result === 'CAPCHA_NOT_READY') {
-              return;
-            }
-
-            const [, solution] = result.split('|');
-
-            if (solution) {
-              clearInterval(timer);
-              resolve({
-                taskId,
-                solution,
-              });
-            } else if (result === 'ERROR_CAPTCHA_UNSOLVABLE') {
-              clearInterval(timer);
-              reject(new Error('Unable to solve captcha'));
-            } else {
-              clearInterval(timer);
-              reject(new Error(result));
-            }
-          } catch (e: any) {
-            clearInterval(timer);
-            reject(e);
+          if (this.debug) {
+            console.log('[debug] getSolution result:', result);
           }
-        }, this.delay);
-      });
-    } catch (e: any) {
-      throw new Error(`get solution failed: ${e.message}`);
-    }
+
+          if (result === 'CAPCHA_NOT_READY') {
+            return;
+          }
+
+          const [, solution] = result.split('|');
+
+          if (solution) {
+            clearInterval(timer);
+            resolve({
+              taskId,
+              solution,
+            });
+          } else if (result === 'ERROR_CAPTCHA_UNSOLVABLE') {
+            clearInterval(timer);
+            throw new Error('Unable to solve captcha');
+          } else {
+            clearInterval(timer);
+            throw new Error(result);
+          }
+        } catch (e: any) {
+          clearInterval(timer);
+          reject(e);
+        }
+      }, this.delay);
+    });
   }
 
   async report(taskId: string, isGood: boolean) {

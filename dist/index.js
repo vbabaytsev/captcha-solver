@@ -44,57 +44,52 @@ class CaptchaSolver {
             throw new Error(`Task creation failed: ${e.message}`);
         }
     }
-    async getSolution(taskId) {
-        try {
-            return await new Promise((resolve, reject) => {
-                const timer = setInterval(async () => {
-                    try {
-                        const result = await (0, got_1.default)(this.resultUrl, {
-                            resolveBodyOnly: true,
-                            https: {
-                                rejectUnauthorized: false,
-                            },
-                            retry: 2,
-                            timeout: 30000,
-                            searchParams: {
-                                key: this.key,
-                                action: 'get',
-                                id: taskId,
-                            },
-                        });
-                        if (this.debug) {
-                            console.log('[debug] getSolution result:', result);
-                        }
-                        if (result === 'CAPCHA_NOT_READY') {
-                            return;
-                        }
-                        const [, solution] = result.split('|');
-                        if (solution) {
-                            clearInterval(timer);
-                            resolve({
-                                taskId,
-                                solution,
-                            });
-                        }
-                        else if (result === 'ERROR_CAPTCHA_UNSOLVABLE') {
-                            clearInterval(timer);
-                            reject(new Error('Unable to solve captcha'));
-                        }
-                        else {
-                            clearInterval(timer);
-                            reject(new Error(result));
-                        }
+    getSolution(taskId) {
+        return new Promise((resolve, reject) => {
+            const timer = setInterval(async () => {
+                try {
+                    const result = await (0, got_1.default)(this.resultUrl, {
+                        resolveBodyOnly: true,
+                        https: {
+                            rejectUnauthorized: false,
+                        },
+                        retry: 2,
+                        timeout: 30000,
+                        searchParams: {
+                            key: this.key,
+                            action: 'get',
+                            id: taskId,
+                        },
+                    });
+                    if (this.debug) {
+                        console.log('[debug] getSolution result:', result);
                     }
-                    catch (e) {
+                    if (result === 'CAPCHA_NOT_READY') {
+                        return;
+                    }
+                    const [, solution] = result.split('|');
+                    if (solution) {
                         clearInterval(timer);
-                        reject(e);
+                        resolve({
+                            taskId,
+                            solution,
+                        });
                     }
-                }, this.delay);
-            });
-        }
-        catch (e) {
-            throw new Error(`get solution failed: ${e.message}`);
-        }
+                    else if (result === 'ERROR_CAPTCHA_UNSOLVABLE') {
+                        clearInterval(timer);
+                        throw new Error('Unable to solve captcha');
+                    }
+                    else {
+                        clearInterval(timer);
+                        throw new Error(result);
+                    }
+                }
+                catch (e) {
+                    clearInterval(timer);
+                    reject(e);
+                }
+            }, this.delay);
+        });
     }
     async report(taskId, isGood) {
         if (this.provider === 'capmonster.cloud') {
