@@ -24,10 +24,6 @@ class CaptchaSolver {
                 https: {
                     rejectUnauthorized: false,
                 },
-                retry: {
-                    methods: ['POST'],
-                    limit: 3,
-                },
                 timeout: 30000,
                 [params.method === 'base64' ? 'form' : 'searchParams']: { key: this.key, ...params },
             });
@@ -53,7 +49,6 @@ class CaptchaSolver {
                         https: {
                             rejectUnauthorized: false,
                         },
-                        retry: 2,
                         timeout: 30000,
                         searchParams: {
                             key: this.key,
